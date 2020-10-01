@@ -3,7 +3,7 @@ def dockerImage
 pipeline {
   environment {
     imagename = "opensourcemano/api-fe"
-    registryCredential = ''   // To be updated with an explicit ID
+    registryCredential = 'dockerhub'
   }
   agent any
   stages {
