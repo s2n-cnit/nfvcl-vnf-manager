@@ -25,6 +25,14 @@ RUN apt-get update && apt-get install -y git python3 python3-pip \
     && python3 -m pip install -U grpclib \
     && python3 -m pip install -U PyYAML
 
+# Libraries used by the vnf: asyncssh, ansible
+#RUN apt-get update && apt-get install software-properties-common \
+#    && apt-add-repository --yes --update ppa:ansible/ansible \
+#    && apt install ansible \
+#    && python3 -m pip install asyncssh
+#RUN apt-get update \
+#     && python3 -m pip install asyncssh
+
 # Copy the current directory contents into the container at /app/LCM
 ADD . /app/EE
 
