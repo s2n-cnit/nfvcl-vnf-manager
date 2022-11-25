@@ -33,6 +33,7 @@ from osm_ee.frontend_pb2 import SshKeyRequest, SshKeyReply
 
 from osm_ee.base_ee import BaseEE
 import osm_ee.util.util_ee as util_ee
+import osm_ee.util.util_grpc as util_grpc
 
 
 class FrontendExecutor(FrontendExecutorBase):
@@ -75,7 +76,7 @@ async def main(*, host: str = '0.0.0.0', port: int = 50051) -> None:
     # Start server
     server = Server([FrontendExecutor()])
     with graceful_exit([server]):
-        await server.start(host, port)
+        await server.start(host, port, ssl=util_grpc.create_secure_context())
         logging.getLogger('osm_ee.frontend_server').debug(f'Serving on {host}:{port}')
         await server.wait_closed()
 
