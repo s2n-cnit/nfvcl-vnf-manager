@@ -5,7 +5,7 @@ pipeline {
     imagename = "opensourcemano/api-fe"
     registryCredential = 'dockerhub'
   }
-  agent any
+  agent { label 'osm1' }
   stages {
     stage('Build API-FE image') {
       steps{
