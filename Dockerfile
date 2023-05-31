@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y git python3 python3-pip \
     && python3 -m pip install --upgrade pip \
     && python3 -m pip install -U grpcio-tools \
     && python3 -m pip install -U grpclib \
-    && python3 -m pip install -U PyYAML
+    && python3 -m pip install -U PyYAML \
+    && python3 -m pip install -U kubernetes
 
 # Libraries used by the vnf: asyncssh, ansible
 #RUN apt-get update && apt-get install software-properties-common \
