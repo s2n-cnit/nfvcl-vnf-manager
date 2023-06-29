@@ -16,7 +16,8 @@ def get_secret_data(name) -> dict:
     try:
         secret = v1.read_namespaced_secret(name, current_namespace)
     except ApiException as e:
-        if e.reason == 'Not Found':  # Backwards compatibility: we run in k8s but certs don't exist
+        if e.reason in ("Not Found", "Forbidden"):
+            # Backwards compatibility: we run in k8s but certs don't exist, or we are running in a different namespace
             return {}
         else:
             raise
