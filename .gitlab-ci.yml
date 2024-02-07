@@ -9,5 +9,5 @@ build:
     DOCKER_TLS_CERTDIR: "/certs"
   script:
 #    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/c2n-cnit/nfvcl-vnf-manager:latest .
+    - docker build -t c2n-cnit/nfvcl-vnf-manager:latest .
 #    - docker push $CI_REGISTRY/c2n-cnit/nfvcl-vnf-manager:latest
