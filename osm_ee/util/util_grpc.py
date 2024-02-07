@@ -23,10 +23,6 @@ def create_secure_context() -> ssl.SSLContext:
     ctx.load_verify_locations(CLIENT_CA_FILE)
     ctx.set_ciphers('ECDHE+AESGCM:ECDHE+CHACHA20:DHE+AESGCM:DHE+CHACHA20')
     ctx.set_alpn_protocols(['h2'])
-    try:
-        ctx.set_npn_protocols(['h2'])
-    except NotImplementedError:
-        pass
     return ctx
 
 

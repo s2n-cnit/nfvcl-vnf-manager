@@ -27,4 +27,4 @@ bash ${EE_PATH}/osm_ee/vnf/install.sh
 
 # Start frontend
 echo "Starting frontend server"
-python3 -m osm_ee.frontend_server
+/opt/poetry/bin/poetry run python -m osm_ee.frontend_server

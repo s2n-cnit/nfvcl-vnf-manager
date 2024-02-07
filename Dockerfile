@@ -13,18 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
+
+ENV TZ="UTC"
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 # Set the working directory to /app
 WORKDIR /app/EE
 
 # Libraries used by the base osm defined ee
-RUN apt-get update && apt-get install -y git python3 python3-pip \
-    && python3 -m pip install --upgrade pip \
-    && python3 -m pip install -U grpcio-tools \
-    && python3 -m pip install -U grpclib \
-    && python3 -m pip install -U PyYAML \
-    && python3 -m pip install -U kubernetes
+RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y git python3 python3-pip curl \
+    && mkdir -p /opt/poetry && curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python3 - \
+    && apt-get autoremove -y \
+    && apt-get clean all -y \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="${PATH}:/opt/poetry"
 
 # Libraries used by the vnf: asyncssh, ansible
 #RUN apt-get update && apt-get install software-properties-common \
@@ -34,11 +39,20 @@ RUN apt-get update && apt-get install -y git python3 python3-pip \
 #RUN apt-get update \
 #     && python3 -m pip install asyncssh
 
+RUN apt-get update && apt-get install -y software-properties-common wget \
+    && apt-add-repository --yes --update ppa:ansible/ansible \
+    && apt-get update && apt install -y ansible && rm -rf /var/lib/apt/lists/* \
+    && echo "[defaults]\nhost_key_checking = False" >> /etc/ansible/ansible.cfg \
+    && ansible-galaxy collection install vyos.vyos \
+    && ansible-galaxy collection install prometheus.prometheus \
+    && ansible-galaxy collection install git+http://gitlab.maas/alderico/nfvcl-ansible-collection.git,master
+
 # Copy the current directory contents into the container at /app/LCM
 ADD . /app/EE
 
-# Install as module
-RUN python3 -m pip install -e /app/EE
+RUN /opt/poetry/bin/poetry install \
+    && yes | /opt/poetry/bin/poetry cache clear --all . \
+    && chmod +x /app/EE/osm_ee/scripts/ee_start.sh
 
 # Install SNMP Generator and its dependencies
 #RUN apt-get install -y python3-pip unzip build-essential libsnmp-dev wget curl
