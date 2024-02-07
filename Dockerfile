@@ -45,7 +45,7 @@ RUN apt-get update && apt-get install -y software-properties-common wget \
     && echo "[defaults]\nhost_key_checking = False" >> /etc/ansible/ansible.cfg \
     && ansible-galaxy collection install vyos.vyos \
     && ansible-galaxy collection install prometheus.prometheus \
-    && ansible-galaxy collection install git+http://gitlab.maas/alderico/nfvcl-ansible-collection.git,master
+    && ansible-galaxy collection install git+https://github.com/s2n-cnit/nfvcl-ansible-collection.git,v0.0.1
 
 # Copy the current directory contents into the container at /app/LCM
 ADD . /app/EE
