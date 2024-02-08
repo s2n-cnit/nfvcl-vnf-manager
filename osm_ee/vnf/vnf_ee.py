@@ -17,6 +17,8 @@
 
 import asyncio
 import logging
+from typing import Optional, List
+
 import yaml
 import urllib
 import json
@@ -195,6 +197,15 @@ class VnfEE:
             yield "PROCESSING", f"Processing {i} action id {id_}"
         yield "OK", f"Processed action id {id_}"
 
+    def create_ansible_inventory(self, host: str, username: str, password: str, become_password: Optional[str] = None):
+        str_list: List[str] = [f"ansible_host={host}", f"ansible_user={username}", f"ansible_password={password}"]
+
+        if become_password:
+            str_list.append(f"ansible_become_pass={become_password}")
+
+        return f"host {' '.join(str_list)}"
+
+
     async def flexops(self, id_, params):
         self.logger.debug("Execute action ansible_playbook, params: {} --- id: {}".format(params, id_))
 
@@ -206,19 +217,14 @@ class VnfEE:
         try:
             self._check_required_params(params, ['config-content'])
 
-            # params["ansible_user"] = self.config_params["ssh-username"]
-            # params["ansible_password"] = self.config_params["ssh-password"]
-
-            # inventory = self.config_params["ssh-hostname"] + ","
-
             self.logger.debug('creating Ansible inventory file')
             with open(self.ANSIBLE_INVENTORY_PATH, "w") as f:
-                h1 = "host ansible_host={0} ansible_user={1} ansible_password={2}\n".format(
+                f.write(self.create_ansible_inventory(
                     self.config_params["ssh-hostname"],
                     self.config_params["ssh-username"],
-                    self.config_params["ssh-password"]
-                )
-                f.write(h1)
+                    self.config_params["ssh-password"],
+                    self.config_params["become-password"] if self.config_params["become-password"] else None
+                ))
 
             self.logger.debug('config-content parsing\n')
             config = yaml.safe_load(params['config-content'])
