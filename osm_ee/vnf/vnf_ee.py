@@ -223,7 +223,7 @@ class VnfEE:
                     self.config_params["ssh-hostname"],
                     self.config_params["ssh-username"],
                     self.config_params["ssh-password"],
-                    self.config_params["become-password"] if self.config_params["become-password"] else None
+                    become_password=self.config_params["become-password"] if "become-password" in self.config_params else None
                 ))
 
             self.logger.debug('config-content parsing\n')
