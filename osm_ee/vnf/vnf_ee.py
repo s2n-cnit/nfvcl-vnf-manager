@@ -198,10 +198,10 @@ class VnfEE:
         yield "OK", f"Processed action id {id_}"
 
     def create_ansible_inventory(self, host: str, username: str, password: str, become_password: Optional[str] = None):
-        str_list: List[str] = [f"ansible_host={host}", f"ansible_user={username}", f"ansible_password={password}"]
+        str_list: List[str] = [f"ansible_host='{host}'", f"ansible_user='{username}'", f"ansible_password='{password}'"]
 
         if become_password:
-            str_list.append(f"ansible_become_pass={become_password}")
+            str_list.append(f"ansible_become_pass='{become_password}'")
 
         return f"host {' '.join(str_list)}"
 
